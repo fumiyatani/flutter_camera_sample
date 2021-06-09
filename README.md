@@ -1,10 +1,17 @@
 # flutter_camera_sample
 
-A new Flutter project.
+このプロジェクトは以下の記事のサンプルです。
+https://flutter.dev/docs/cookbook/plugins/picture-using-camera
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+git clone した後にプロジェクト直下で以下のコマンドを実行してください
+`$ flutter pub get`
+
+## 機能 (予定)
+- プレビュー表示
+- 撮影画像の保存
+- 撮影画像のアプリ上表示
 
 A few resources to get you started if this is your first Flutter project:
 
