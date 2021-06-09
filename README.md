@@ -3,6 +3,9 @@
 このプロジェクトは以下の記事のサンプルです。
 https://flutter.dev/docs/cookbook/plugins/picture-using-camera
 
+さらにサンプル
+https://github.com/flutter/plugins/tree/master/packages/camera/camera/example
+
 ## Getting Started
 
 git clone した後にプロジェクト直下で以下のコマンドを実行してください
