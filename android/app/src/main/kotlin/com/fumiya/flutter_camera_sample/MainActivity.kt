@@ -46,7 +46,7 @@ class MainActivity : FlutterActivity() {
         }
 
         if (requestCode == REQUEST_CODE_CAMERA) {
-            cameraResult.success(data?.data?.path)
+            cameraResult.success(data?.data)
         }
     }
 
