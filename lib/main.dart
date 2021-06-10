@@ -1,33 +1,28 @@
 import 'dart:async';
 import 'dart:io';
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_camera_sample/platform_camera_page.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final cameras = await availableCameras();
-
-  final firstCamera = cameras.first;
-
   runApp(
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TakePictureScreen(camera: firstCamera),
+      home: TakePictureScreen(),
     ),
   );
 }
 
 class TakePictureScreen extends StatefulWidget {
-  final CameraDescription camera;
-
   const TakePictureScreen({
     Key? key,
-    required this.camera,
   }) : super(key: key);
 
   @override
@@ -36,22 +31,13 @@ class TakePictureScreen extends StatefulWidget {
 
 class TakePictureScreenState extends State<TakePictureScreen> {
   late CameraController _controller;
+  late Future<void> _initializeCamera;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = CameraController(
-      widget.camera,
-      ResolutionPreset.max,
-    );
-    _controller.initialize().then<void>((_) {
-      if (!mounted) {
-        return;
-      } else {
-        setState(() {});
-      }
-    });
+    _initCameraController();
   }
 
   @override
@@ -66,33 +52,50 @@ class TakePictureScreenState extends State<TakePictureScreen> {
       appBar: AppBar(
         title: const Text('Take a Picture'),
       ),
-      body: _buildBody(),
+      body: _buildCameraPreview(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          takePicture();
+          takePicture(context);
         },
         child: const Icon(Icons.camera_alt),
       ),
     );
   }
 
-  Widget _buildBody() {
-    if (_controller.value.isInitialized) {
-      return CameraPreview(_controller);
-    } else {
-      return CircularProgressIndicator();
+  Future<void> _initCameraController() async {
+    final cameras = await availableCameras();
+
+    if (cameras.isNotEmpty) {
+      _controller = CameraController(cameras.first, ResolutionPreset.max);
+      _initializeCamera = _controller.initialize();
     }
   }
 
-  Future<void> takePicture() async {
-    try {
-      final image = await _controller.takePicture();
+  Widget _buildCameraPreview() {
+    return FutureBuilder<void>(
+      future: _initializeCamera,
+      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+        return snapshot.connectionState == ConnectionState.done
+            ? CameraPreview(_controller)
+            : CircularProgressIndicator();
+      },
+    );
+  }
 
+  Future<void> takePicture(BuildContext context) async {
+    try {
+      await _initializeCamera;
+
+      final imagePath = join(
+        (await getApplicationDocumentsDirectory()).path,
+        '${DateTime.now()}.png',
+      );
+
+      await _controller.takePicture(imagePath);
+      print('imagePath : $imagePath');
       await Navigator.of(context).push<void>(
         MaterialPageRoute(
-          builder: (BuildContext context) => DisplayPictureScree(
-            imagePath: image.path,
-          ),
+          builder: (BuildContext context) => PlatformCameraPage(),
         ),
       );
     } catch (e) {
