@@ -9,25 +9,24 @@ class PlatformCameraPage extends StatefulWidget {
 
 class _PlatformCameraPageState extends State<PlatformCameraPage> {
   // 各プラットフォームと接続するためのエントリーポイント
-  static const platform = MethodChannel('com.fumiya.flutter_camera_sample/battery');
+  static const cameraPlatform = MethodChannel('com.fumiya.flutter_camera_sample/camera');
 
-  String _batteryLevel = 'Unknown battery level.';
+  String? _imagePath;
 
   Future<void> _getBatteryLevel() async {
-    String batteryLevel;
+    String? imagePath;
 
     try {
       // プラットフォーム側に公開する Flutter 側のメソッド
       // MethodChannel#invokeMethod<ReturnType>('Method Name');
-      final result = await platform.invokeMethod<int?>('getBatteryLevel');
-      batteryLevel = 'Battery level at $result % .';
+      imagePath = await cameraPlatform.invokeMethod<String?>('moveToCameraActivity');
     } on PlatformException catch (e) {
-      batteryLevel = "Failed to get battery level: '${e.message}'.";
+      imagePath = 'failed to open CameraActivity';
     }
 
     // プラットフォームから取得したデータを画面に反映する
     setState(() {
-      _batteryLevel = batteryLevel;
+      _imagePath = imagePath;
     });
   }
 
@@ -35,16 +34,19 @@ class _PlatformCameraPageState extends State<PlatformCameraPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Battery Level'),
+        title: Text('Camera Sample'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(_batteryLevel),
+          Text('この下にImagePathが表示されます'),
+          _imagePath == null ? Text('null') : Text('imagePath : $_imagePath'),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _getBatteryLevel,
+        onPressed: () async {
+          await _getBatteryLevel();
+        },
         child: Icon(Icons.ac_unit_sharp),
       ),
     );

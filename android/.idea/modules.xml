@@ -4,8 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android.iml" filepath="$PROJECT_DIR$/.idea/modules/android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/android.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-129697104/android.camera.iml" filepath="$PROJECT_DIR$/.idea/modules/-129697104/android.camera.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/-730685490/android.path_provider.iml" filepath="$PROJECT_DIR$/.idea/modules/-730685490/android.path_provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1051995237/io.flutter.plugins.camera.android.camera.iml" filepath="$PROJECT_DIR$/.idea/modules/1051995237/io.flutter.plugins.camera.android.camera.iml" />
     </modules>
   </component>
 </project>
